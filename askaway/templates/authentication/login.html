@@ -1,0 +1,296 @@
+{% extends 'home/index.html' %}
+
+
+{% block content %}
+<style>
+    /* Global styles */
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9fafb;
+        color: #333;
+        line-height: 1.5;
+    }
+
+    /* Scoped styles for login component */
+    .login-container {
+        width: 100%;
+        max-width: 28rem;
+        /* max-w-md */
+        margin: 0 auto;
+        padding: 2.5rem 1rem;
+        /* py-10 */
+    }
+
+    .login-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 2px solid rgba(99, 102, 241, 0.2);
+        /* border-2 border-brand-light/20 */
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        /* shadow-lg */
+        overflow: hidden;
+    }
+
+    .login-card-header {
+        padding: 1.5rem 1.5rem 1.5rem;
+        background-image: linear-gradient(to right, rgba(99, 102, 241, 0.1), rgba(99, 102, 241, 0.05));
+        /* bg-gradient-to-r from-brand-light/10 to-brand-DEFAULT/5 */
+        padding-bottom: 1.5rem;
+        /* pb-6 */
+    }
+
+    .login-card-title {
+        margin: 0 0 0.5rem;
+        font-size: 1.5rem;
+        /* text-2xl */
+        font-weight: 700;
+        /* font-bold */
+        text-align: center;
+        /* text-center */
+        color: #4f46e5;
+        /* text-brand-dark */
+    }
+
+    .login-card-description {
+        margin: 0;
+        text-align: center;
+        /* text-center */
+        color: #6b7280;
+        /* text-gray-500 */
+        font-size: 0.875rem;
+    }
+
+    .login-card-content {
+        padding: 1.5rem;
+        padding-top: 1.5rem;
+        /* pt-6 */
+    }
+
+    .login-form-group {
+        margin-bottom: 1rem;
+    }
+
+    .login-form-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .login-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #374151;
+        /* text-gray-700 */
+    }
+
+    .login-input {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        border-radius: 0.375rem;
+        border: 2px solid #e5e7eb;
+        /* border-2 */
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    .login-input:focus {
+        outline: none;
+        border-color: #6366f1;
+        /* focus-visible:ring-brand-light */
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+
+    .login-card-footer {
+        background-color: #f9fafb;
+        /* bg-gray-50 */
+        padding: 1rem 1.5rem;
+        /* px-6 py-4 */
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .login-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: white;
+        background-color: #6366f1;
+        /* bg-brand-DEFAULT */
+        border: none;
+        border-radius: 0.375rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        /* shadow-md */
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out;
+    }
+
+    .login-button:hover {
+        background-color: #4f46e5;
+        /* hover:bg-brand-dark */
+    }
+
+    .login-button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    .login-button-icon {
+        width: 1rem;
+        height: 1rem;
+        margin-right: 0.5rem;
+    }
+
+    .login-footer-text {
+        margin-top: 1rem;
+        text-align: center;
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+
+    .login-link {
+        color: #6366f1;
+        /* text-brand-DEFAULT */
+        font-weight: 500;
+        text-decoration: none;
+    }
+
+    .login-link:hover {
+        text-decoration: underline;
+    }
+
+    #id_username,
+    #id_password {
+        width: 100%;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        border-radius: 0.375rem;
+        border: 2px solid #e5e7eb;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+
+    #id_username:focus,
+    #id_password:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+
+    #id_username::placeholder {
+        color: #9ca3af;
+    }
+
+    .login-error,
+    .login-field-error {
+        color: #ef4444;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+</style>
+
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-card-header">
+            <h2 class="login-card-title">Welcome Back</h2>
+            <p class="login-card-description">Enter your email and password to sign in</p>
+        </div>
+
+        <form id="login-form" method="post" action="{% url 'authentication:login' %}">
+            {% csrf_token %}
+
+            <div class="login-card-content">
+                {% if form.non_field_errors %}
+                <div class="login-error">
+                    {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="login-form-group">
+                    <label for="{{ form.username.id_for_label }}" class="login-label">Email</label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                    <div class="login-field-error">
+                        {% for error in form.username.errors %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="login-form-group">
+                    <label for="{{ form.password.id_for_label }}" class="login-label">Password</label>
+                    {{ form.password }}
+                    {% if form.password.errors %}
+                    <div class="login-field-error">
+                        {% for error in form.password.errors %}
+                        <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if next %}
+                <input type="hidden" name="next" value="{{ next }}">
+                {% endif %}
+            </div>
+
+            <div class="login-card-footer">
+                <button type="submit" class="login-button" id="login-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="login-button-icon">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+                        <polyline points="10 17 15 12 10 7"></polyline>
+                        <line x1="15" y1="12" x2="3" y2="12"></line>
+                    </svg>
+                    Sign In
+                </button>
+                <div class="login-footer-text">
+                    Don't have an account?
+                    <a href="{% url 'authentication:signup' %}" class="login-link">Sign up</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- <script> // Basic form handling
+
+    document.getElementById('login-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const button = document.getElementById('login-button');
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // Disable button and show loading state
+        button.disabled = true;
+        button.innerHTML = ` <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="login-button-icon" > <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" ></path> <polyline points="10 17 15 12 10 7" ></polyline> <line x1="15" y1="12" x2="3" y2="12" ></line> </svg> Signing in... `;
+
+        // Here you would typically make an API call to authenticate
+        // For demo purposes, we'll just simulate a delay
+        setTimeout(() => {
+            console.log('Login attempt with:', {
+                email, password
+            });
+
+            // Reset button state (in a real app, you'd redirect on success)
+            button.disabled = false;
+            button.innerHTML = ` <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="login-button-icon" > <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" ></path> <polyline points="10 17 15 12 10 7" ></polyline> <line x1="15" y1="12" x2="3" y2="12" ></line> </svg> Sign In `;
+        }
+
+            , 1500);
+    });
+
+</script> -->
+{% endblock %}

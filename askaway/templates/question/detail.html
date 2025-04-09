@@ -1,0 +1,533 @@
+{% extends "home/index.html" %}
+{% load time_filter %}
+{% block content %}
+<style>
+    /* Base styles */
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: #333;
+        line-height: 1.5;
+    }
+
+    /* Scoped styles for question detail page */
+    .qd-container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+
+    .qd-back-link {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        color: #6b7280;
+        text-decoration: none;
+        margin-bottom: 1.5rem;
+        transition: color 0.2s;
+    }
+
+    .qd-back-link:hover {
+        color: #6366f1;
+    }
+
+    .qd-back-icon {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .qd-question-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .qd-question-title {
+        font-size: 1.875rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #111827;
+    }
+
+    .qd-question-meta {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-bottom: 1.5rem;
+    }
+
+    .qd-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .qd-meta-icon {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .qd-question-content {
+        color: #4b5563;
+        white-space: pre-line;
+    }
+
+    .qd-question-image {
+        margin-top: 1rem;
+    }
+
+    .qd-question-image img {
+        max-width: 100%;
+        max-height: 20rem;
+        border-radius: 0.5rem;
+        object-fit: contain;
+    }
+
+    .qd-answers-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .qd-answers-header {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #111827;
+    }
+
+    .qd-answers-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    .qd-no-answers {
+        background-color: rgba(243, 244, 246, 0.3);
+        padding: 2rem;
+        border-radius: 0.5rem;
+        text-align: center;
+    }
+
+    .qd-no-answers-text {
+        color: #6b7280;
+        margin-bottom: 0.5rem;
+    }
+
+    .qd-no-answers-subtext {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+
+    .qd-login-link {
+        color: #6366f1;
+        text-decoration: none;
+    }
+
+    .qd-login-link:hover {
+        text-decoration: underline;
+    }
+
+    .qd-answers-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .qd-answer-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+    }
+
+    .qd-answer-content {
+        padding: 1.25rem;
+    }
+
+    .qd-answer-text {
+        color: #4b5563;
+        white-space: pre-line;
+    }
+
+    .qd-answer-footer {
+        padding: 1rem 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.875rem;
+        color: #6b7280;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .qd-answer-author {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .qd-author-name {
+        font-weight: 500;
+    }
+
+    .qd-answer-date {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    .qd-like-button {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #6b7280;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        transition: background-color 0.2s;
+    }
+
+    .qd-like-button:hover {
+        background-color: #f3f4f6;
+    }
+
+    .qd-like-icon {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    .qd-like-icon.liked {
+        fill: #ef4444;
+        color: #ef4444;
+    }
+
+    .qd-answer-form-card {
+        background-color: white;
+        border-radius: 0.5rem;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+    }
+
+    .qd-answer-form-content {
+        padding: 1.5rem;
+        padding-top: 1.5rem;
+    }
+
+    .qd-answer-form-title {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #111827;
+    }
+
+    .qd-answer-textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 0.375rem;
+        border: 1px solid #e5e7eb;
+        min-height: 9rem;
+        resize: vertical;
+        font-family: inherit;
+        font-size: 0.875rem;
+    }
+
+    .qd-answer-textarea:focus {
+        outline: none;
+        border-color: #a5b4fc;
+        box-shadow: 0 0 0 2px rgba(165, 180, 252, 0.5);
+    }
+
+    .qd-answer-form-footer {
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: flex-end;
+        border-top: 1px solid #e5e7eb;
+        background-color: #f9fafb;
+    }
+
+    .qd-submit-button {
+        background-color: #6366f1;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .qd-submit-button:hover {
+        background-color: #4f46e5;
+    }
+
+    .qd-submit-button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    .qd-login-section {
+        text-align: center;
+        padding: 1.5rem 0;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .qd-login-message {
+        margin-bottom: 1rem;
+        color: #4b5563;
+    }
+
+    .qd-auth-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .qd-button {
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .qd-button-outline {
+        background-color: white;
+        color: #111827;
+        border: 1px solid #d1d5db;
+    }
+
+    .qd-button-outline:hover {
+        background-color: #f3f4f6;
+    }
+
+    .qd-button-primary {
+        background-color: #6366f1;
+        color: white;
+        border: none;
+    }
+
+    .qd-button-primary:hover {
+        background-color: #4f46e5;
+    }
+
+    .qd-answer-form-content {
+        width: 100%;
+    }
+
+    .qd-answer-form-content textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.75rem;
+        border-radius: 0.375rem;
+        border: 1px solid #e5e7eb;
+        min-height: 9rem;
+        resize: vertical;
+        font-family: inherit;
+        font-size: 0.875rem;
+    }
+
+    .qd-answer-form-content textarea:focus {
+        outline: none;
+        border-color: #a5b4fc;
+        box-shadow: 0 0 0 2px rgba(165, 180, 252, 0.5);
+    }
+</style>
+
+<div class="qd-container">
+    <!-- Back link -->
+    <a href="/" class="qd-back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="qd-back-icon">
+            <path d="m12 19-7-7 7-7"></path>
+            <path d="M19 12H5"></path>
+        </svg>
+        <span>Back to questions</span>
+    </a>
+
+    <!-- Question section -->
+    <div class="qd-question-section">
+        <h1 class="qd-question-title">{{question.title}}</h1>
+        <div class="qd-question-meta">
+            <div class="qd-meta-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="qd-meta-icon">
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>{{question.user.username}}</span>
+            </div>
+            <div class="qd-meta-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="qd-meta-icon">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>{{question.created_at|time_ago}}</span>
+            </div>
+        </div>
+        <p class="qd-question-content">
+            {{question.description}}
+        </p>
+
+        <!-- Question image (if available) -->
+        <!-- <div class="qd-question-image">
+                <img src="https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=800&q=80"
+                    alt="Question illustration">
+            </div> -->
+    </div>
+
+    <!-- Answers section -->
+    <div class="qd-answers-section">
+        <h2 class="qd-answers-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="qd-answers-icon">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            {% if question.answers.all|length > 1 %}
+            <span>{{question.answers.all|length}} Answers</span>
+            {% else %}
+            <span>{{question.answers.all|length}} Answer</span>
+            {% endif %}
+        </h2>
+
+        <!-- If no answers -->
+        <!-- 
+      <div class="qd-no-answers">
+        <p class="qd-no-answers-text">No answers yet</p>
+        <p class="qd-no-answers-subtext">Be the first to answer this question!</p>
+        
+        <div class="qd-login-prompt" style="margin-top: 1rem;">
+          <a href="/login" class="qd-login-link">Login to answer this question</a>
+        </div>
+      </div>
+      -->
+        {% if answers %}
+
+        <!-- Answers list -->
+        <div class="qd-answers-list">
+            <!-- Answer 1 -->
+            {% for answer in answers %}
+            <div class="qd-answer-card">
+                <div class="qd-answer-content">
+                    <p class="qd-answer-text">
+                        {{answer.answer}}
+                    </p>
+                </div>
+                <div class="qd-answer-footer">
+                    <div class="qd-answer-author">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="qd-meta-icon">
+                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span class="qd-author-name">{{answer.user.username}}</span>
+                        <span>•</span>
+                        <div class="qd-answer-date">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="qd-meta-icon">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <span>{{answer.created_at|time_ago}}</span>
+                        </div>
+                    </div>
+                    <form action="{% url 'answer:like_answer' answer.id%}" method="post">
+                        {% csrf_token %}
+                        <button class="qd-like-button" type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="qd-like-icon">
+                                <path
+                                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                </path>
+                            </svg>
+
+                            <span>{{answer.no_of_likes}}</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Answer 2 -->
+
+
+            <!-- Answer 3 -->
+
+        </div>
+        <div class="qd-pagination-container" style="margin-top: 2rem; display: flex; justify-content: center;">
+            <div class="qd-pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1" class="qd-pagination-link" style="margin: 0 0.5rem; padding: 0.5rem 1rem; border: 1px solid #e5e7eb; border-radius: 0.375rem; text-decoration: none; color: #4f46e5;">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}" class="qd-pagination-link" style="margin: 0 0.5rem; padding: 0.5rem 1rem; border: 1px solid #e5e7eb; border-radius: 0.375rem; text-decoration: none; color: #4f46e5;">previous</a>
+                {% endif %}
+                
+                <span class="qd-current-page" style="margin: 0 0.5rem; padding: 0.5rem 1rem; border: 1px solid #4f46e5; border-radius: 0.375rem; background-color: #4f46e5; color: white;">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+                
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="qd-pagination-link" style="margin: 0 0.5rem; padding: 0.5rem 1rem; border: 1px solid #e5e7eb; border-radius: 0.375rem; text-decoration: none; color: #4f46e5;">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}" class="qd-pagination-link" style="margin: 0 0.5rem; padding: 0.5rem 1rem; border: 1px solid #e5e7eb; border-radius: 0.375rem; text-decoration: none; color: #4f46e5;">last &raquo;</a>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="qd-no-answers">
+            <p class="qd-no-answers-text">No answers yet</p>
+            <p class="qd-no-answers-subtext">Be the first to answer this question!</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Answer form for logged in users -->
+    {% if user.is_authenticated %}
+    <div class="qd-answer-form-card">
+        <form id="answer-form" method="post" action="{% url 'answer:answer_create'%}">
+            {% csrf_token %}
+            <input type="hidden" name="question_id" value="{{ question.id }}">
+            <div class="qd-answer-form-content">
+                <h3 class="qd-answer-form-title">Your Answer</h3>
+                <div style="width: 100%;">
+                    {{ answer_form.answer}}
+                </div>
+                {% if answer_form.answer.errors %}
+                <div class="qd-field-error">
+                    {% for error in answer_form.answer.errors %}
+                    <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="qd-answer-form-footer">
+                <button type="submit" class="qd-submit-button" id="submit-answer">Post Answer</button>
+            </div>
+        </form>
+    </div>
+    {% else %}
+    <!-- Login section for non-logged in users -->
+    <div class="qd-login-section">
+        <p class="qd-login-message">You need to be logged in to answer this question</p>
+        <div class="qd-auth-buttons">
+            <a href="{% url 'authentication:login' %}" class="qd-button qd-button-outline">Login</a>
+            <a href="{% url 'authentication:signup' %}" class="qd-button qd-button-primary">Sign Up</a>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -32,7 +32,7 @@ AskAway is a web-based question and answer platform that allows users to ask que
 
 Clone the repository:
 ```bash
-git clone https://github.com/yourusername/askaway.git
+git clone https://github.com/AMALDEEP-P/askaway.git
 cd askaway
 ```
 
